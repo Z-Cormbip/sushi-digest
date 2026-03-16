@@ -6,6 +6,12 @@ type RicePatternProps = PropsWithChildren<{
   scale?: number;
   strokeWidth?: number;
   "stroke-width"?: number;
+  height?: CSSProperties["height"];
+  minHeight?: CSSProperties["minHeight"];
+  maxHeight?: CSSProperties["maxHeight"];
+  patternOffsetY?: CSSProperties["backgroundPositionY"];
+  patternHeight?: CSSProperties["height"];
+  patternAnchor?: "top" | "bottom";
   className?: string;
   style?: CSSProperties;
   color?: string;
@@ -17,6 +23,12 @@ const RicePattern = ({
   scale = 1,
   strokeWidth,
   "stroke-width": strokeWidthDashed,
+  height,
+  minHeight,
+  maxHeight,
+  patternOffsetY,
+  patternHeight,
+  patternAnchor = "top",
   className,
   style,
   color = "#e6dfda",
@@ -47,16 +59,44 @@ const RicePattern = ({
     };
   }, [width, spacing, scale, resolvedStrokeWidth, color]);
 
+  const useOverlay = patternHeight !== undefined && patternHeight !== null;
   const mergedStyle: CSSProperties = {
-    backgroundImage: pattern.image,
-    backgroundRepeat: "repeat",
-    backgroundSize: pattern.size,
+    height,
+    minHeight,
+    maxHeight,
+    position: useOverlay ? "relative" : undefined,
+    backgroundImage: useOverlay ? undefined : pattern.image,
+    backgroundRepeat: useOverlay ? undefined : "repeat",
+    backgroundSize: useOverlay ? undefined : pattern.size,
+    backgroundPositionY: useOverlay ? undefined : patternOffsetY,
     ...style,
   };
 
+  const overlayStyle: CSSProperties = useOverlay
+    ? {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        height: patternHeight,
+        bottom: patternAnchor === "bottom" ? 0 : undefined,
+        top: patternAnchor === "top" ? 0 : undefined,
+        backgroundImage: pattern.image,
+        backgroundRepeat: "repeat",
+        backgroundSize: pattern.size,
+        backgroundPositionY: patternOffsetY,
+        backgroundPositionX: "left",
+        pointerEvents: "none",
+      }
+    : {};
+
   return (
     <section className={className} style={mergedStyle}>
-      {children}
+      {useOverlay ? <div aria-hidden="true" style={overlayStyle} /> : null}
+      {useOverlay ? (
+        <div style={{ position: "relative"}}>{children}</div>
+      ) : (
+        children
+      )}
     </section>
   );
 };

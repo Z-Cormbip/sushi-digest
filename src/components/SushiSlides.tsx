@@ -134,7 +134,9 @@ const SushiSlides = () => {
         stroke-width={3}
         spacing={20}
         scale={0.8}
-        color="#F3F3F2"
+        color="#ebebe3"
+        patternHeight={850}
+        patternAnchor="bottom"
       >
         <header className="header-logo">
           <SDLogo aria-label="Sushi Digest logo" />
@@ -227,12 +229,12 @@ const SushiSlides = () => {
             ))}
           </ul>
         </div>
-        {/* SUSHI CONVEYOR */}
-        <SushiConveyor speed={speed} onSelect={setActiveId} />
-        <div className="speed-wrap">
-          <SpeedCtrl onSpeedChange={setSpeed} />
-        </div>
       </RicePattern>
+      {/* SUSHI CONVEYOR */}
+      <SushiConveyor speed={speed} onSelect={setActiveId} />
+      <div className="speed-wrap">
+        <SpeedCtrl onSpeedChange={setSpeed} />
+      </div>
     </>
   );
 };

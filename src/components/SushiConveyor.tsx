@@ -1,4 +1,4 @@
-import { useCallback, type MouseEvent } from "react";
+import { useCallback, useState, type MouseEvent } from "react";
 import { useData } from "../assets/hooks/useData";
 import { useMarquee } from "../assets/hooks/useMarquee";
 
@@ -10,6 +10,13 @@ type SushiConveyorProps = {
 const SushiConveyor = ({ speed, onSelect }: SushiConveyorProps) => {
   const slides = useData();
   const conveyorRef = useMarquee({ speed, pauseOnHover: true });
+  const [pressedId, setPressedId] = useState<string | null>(null);
+
+  const triggerPress = useCallback((id: string | null) => {
+    if (!id) return;
+    setPressedId(id);
+  }, []);
+
   const handleClick = useCallback(
     (event: MouseEvent<HTMLUListElement>) => {
       const target = event.target as HTMLElement | null;
@@ -17,9 +24,12 @@ const SushiConveyor = ({ speed, onSelect }: SushiConveyorProps) => {
       const item = target.closest<HTMLElement>("[data-slide]");
       if (!item || !event.currentTarget.contains(item)) return;
       const id = item.getAttribute("data-slide");
-      if (id) onSelect?.(id);
+      if (id) {
+        onSelect?.(id);
+        triggerPress(id);
+      }
     },
-    [onSelect],
+    [onSelect, triggerPress],
   );
   return (
     <div className="conveyor-wrap">
@@ -33,12 +43,17 @@ const SushiConveyor = ({ speed, onSelect }: SushiConveyorProps) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 onSelect?.(id);
+                triggerPress(id);
               }
             }}
             role="button"
             tabIndex={0}
           >
-            <Svg aria-label={alt} role="img" className="conveyor-item" />
+            <Svg
+              aria-label={alt}
+              role="img"
+              className={`conveyor-item ${pressedId === id ? " is-pressed" : ""}`}
+            />
           </li>
         ))}
       </ul>
