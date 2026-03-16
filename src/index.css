@@ -82,12 +82,16 @@ p {
   @apply transition-all delay-60 duration-300 ease-in-out motion-reduce:transition-none;
 }
 
+.intro-logo {
+  @apply fill-primary relative bottom-12 size-77.5;
+}
+
 .main-wrap {
   @apply overflow-x-hidden pt-6 w-full;
 }
 
 .header-logo {
-  @apply w-75 mx-auto mb-60 fill-primary;
+  @apply w-75 mx-auto mb-64 fill-primary;
   & #mask {
     display: none;
   }
@@ -378,6 +382,10 @@ p {
 }
 
 @media (min-width: theme("screens.lg")) {
+  .intro-logo {
+    @apply size-100;
+  }
+
   .main-wrap {
     margin-top: 0;
     padding-bottom: 2rem;
